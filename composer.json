@@ -1,0 +1,10 @@
+{
+    "name": "poetos/moodle-mod_questupload",
+    "type": "moodle-mod",
+    "require": {
+        "composer/installers": "~1.0"
+    },
+    "extra": {
+        "installer-name": "questupload"
+    }
+}

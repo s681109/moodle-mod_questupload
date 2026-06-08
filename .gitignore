@@ -1,0 +1,17 @@
+# Local/generated artifacts
+.codex_*
+.codex*/
+*.zip
+*.tmp
+*.bak
+*.log
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Dependency/vendor caches if generated locally
+node_modules/
+vendor/

@@ -1,0 +1,389 @@
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * PHPUnit questupload generator tests
+ *
+ * @package    mod_questupload
+ * @copyright  2015 Mike Churchward (mike@churchward.ca)
+ * @author     Mike Churchward
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+namespace mod_questupload;
+
+use mod_questupload\question\question;
+
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+require_once($CFG->dirroot.'/mod/questupload/lib.php');
+require_once($CFG->dirroot.'/mod/questupload/classes/question/question.php');
+
+/**
+ * Unit tests for questupload_lib_testcase.
+ * @group mod_questupload
+ */
+class lib_test extends \advanced_testcase {
+
+    /**
+     * Test for questupload_supports.
+     *
+     * @return void
+     *
+     * @covers \questupload_supports
+     */
+    public function test_questupload_supports() {
+        $this->assertTrue(questupload_supports(FEATURE_BACKUP_MOODLE2));
+        $this->assertFalse(questupload_supports(FEATURE_COMPLETION_TRACKS_VIEWS));
+        $this->assertTrue(questupload_supports(FEATURE_COMPLETION_HAS_RULES));
+        $this->assertFalse(questupload_supports(FEATURE_GRADE_HAS_GRADE));
+        $this->assertFalse(questupload_supports(FEATURE_GRADE_OUTCOMES));
+        $this->assertTrue(questupload_supports(FEATURE_GROUPINGS));
+        $this->assertTrue(questupload_supports(FEATURE_GROUPS));
+        $this->assertTrue(questupload_supports(FEATURE_MOD_INTRO));
+        $this->assertTrue(questupload_supports(FEATURE_SHOW_DESCRIPTION));
+        $this->assertNull(questupload_supports('unknown option'));
+    }
+
+    /**
+     * Test for questupload_get_extra_capabilities.
+     *
+     * @return void
+     *
+     * @covers \questupload_get_extra_capabilities
+     */
+    public function test_questupload_get_extra_capabilities() {
+        $caps = questupload_get_extra_capabilities();
+        $this->assertIsArray($caps);
+        $this->assertEquals(1, count($caps));
+        $this->assertEquals('moodle/site:accessallgroups', reset($caps));
+    }
+
+    /**
+     * Test for questupload_add_instance.
+     *
+     * @return void
+     * @throws moodle_exception
+     *
+     * @covers \questupload_add_instance
+     */
+    public function test_add_instance() {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $course = $this->getDataGenerator()->create_course();
+
+        // Create test data as a record.
+        $questdata = new \stdClass();
+        $questdata->course = $course->id;
+        $questdata->coursemodule = '';
+        $questdata->name = 'Test questupload';
+        $questdata->intro = 'Intro to test questupload.';
+        $questdata->introformat = FORMAT_HTML;
+        $questdata->qtype = 1;
+        $questdata->respondenttype = 'anonymous';
+        $questdata->resp_eligible = 'none';
+        $questdata->resp_view = 2;
+        $questdata->opendate = 99;
+        $questdata->closedate = 50;
+        $questdata->resume = 1;
+        $questdata->navigate = 1;
+        $questdata->grade = 100;
+        $questdata->sid = 1;
+        $questdata->timemodified = 3;
+        $questdata->completionsubmit = 1;
+        $questdata->autonum = 1;
+
+        // Call add_instance with the data.
+        $this->assertTrue(questupload_add_instance($questdata) > 0);
+    }
+
+    /**
+     * Test for questupload_update_instance().
+     *
+     * @return void
+     * @throws dml_exception
+     *
+     * @covers \questupload_update_instance
+     */
+    public function test_update_instance() {
+        global $DB;
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $course = $this->getDataGenerator()->create_course();
+        /** @var mod_questupload_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('mod_questupload');
+        /** @var questupload $questupload */
+        $questupload = $generator->create_instance(array('course' => $course->id, 'sid' => 1));
+
+        $qid = $questupload->id;
+        $this->assertTrue($qid > 0);
+
+        // Change all the default values.
+        // Note, we need to get the actual db row to do an update to it.
+        $qrow = $DB->get_record('questupload', ['id' => $qid]);
+        $qrow->qtype = 1;
+        $qrow->respondenttype = 'anonymous';
+        $qrow->resp_eligible = 'none';
+        $qrow->resp_view = 2;
+        $qrow->opendate = 99;
+        $qrow->closedate = 50;
+        $qrow->resume = 1;
+        $qrow->navigate = 1;
+        $qrow->grade = 100;
+        $qrow->timemodified = 3;
+        $qrow->completionsubmit = 1;
+        $qrow->autonum = 1;
+        $qrow->coursemodule = $questupload->cm->id;
+
+        // Moodle update form passes "instance" instead of "id" to [mod]_update_instance.
+        $qrow->instance = $qid;
+        // Grade function needs the "cm" "idnumber" field.
+        $qrow->cmidnumber = '';
+
+        $this->assertTrue(questupload_update_instance($qrow));
+
+        $questrecord = $DB->get_record('questupload', array('id' => $qid));
+        $this->assertNotEmpty($questrecord);
+        $this->assertEquals($qrow->qtype, $questrecord->qtype);
+        $this->assertEquals($qrow->respondenttype, $questrecord->respondenttype);
+        $this->assertEquals($qrow->resp_eligible, $questrecord->resp_eligible);
+        $this->assertEquals($qrow->resp_view, $questrecord->resp_view);
+        $this->assertEquals($qrow->opendate, $questrecord->opendate);
+        $this->assertEquals($qrow->closedate, $questrecord->closedate);
+        $this->assertEquals($qrow->resume, $questrecord->resume);
+        $this->assertEquals($qrow->navigate, $questrecord->navigate);
+        $this->assertEquals($qrow->grade, $questrecord->grade);
+        $this->assertEquals($qrow->sid, $questrecord->sid);
+        $this->assertEquals($qrow->timemodified, $questrecord->timemodified);
+        $this->assertEquals($qrow->completionsubmit, $questrecord->completionsubmit);
+        $this->assertEquals($qrow->autonum, $questrecord->autonum);
+    }
+
+    /**
+     * Test for questupload_delete_instance().
+     *
+     * Need to verify that delete_instance deletes all data associated with a questupload.
+     *
+     * @return void
+     * @throws dml_exception
+     *
+     * @covers \questupload_delete_instance
+     */
+    public function test_delete_instance() {
+        global $DB;
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        // Set up a new questupload.
+        $questiondata = array();
+        $questiondata['content'] = 'Enter yes or no';
+        $course = $this->getDataGenerator()->create_course();
+        $generator = $this->getDataGenerator()->get_plugin_generator('mod_questupload');
+        $questupload = $generator->create_test_questupload($course, QUESYESNO, $questiondata);
+
+        $question = reset($questupload->questions);
+
+        // Add a response for the question.
+        $response = $generator->create_question_response($questupload, $question, 'y');
+
+        // Get records for database deletion confirmation.
+        $survey = $DB->get_record('questupload_survey', array('id' => $questupload->sid));
+
+        // Now delete it all.
+        $this->assertTrue(questupload_delete_instance($questupload->id));
+        $this->assertEmpty($DB->get_record('questupload', array('id' => $questupload->id)));
+        $this->assertEmpty($DB->get_record('questupload_survey', array('id' => $questupload->sid)));
+        $this->assertEmpty($DB->get_records('questupload_question', array('surveyid' => $survey->id)));
+        $this->assertEmpty($DB->get_records('questupload_response', array('questuploadid' => $questupload->id)));
+        $this->assertEmpty($DB->get_records('questupload_response_bool', array('response_id' => $response->id)));
+        $this->assertEmpty($DB->get_records('event', array("modulename" => 'questupload', "instance" => $questupload->id)));
+    }
+
+    /**
+     * Test for questupload_user_outline().
+     *
+     * @return void
+     * @throws coding_exception
+     *
+     * @covers \questupload_user_outline
+     */
+    public function test_questupload_user_outline() {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $user = $this->getDataGenerator()->create_user();
+        $course = $this->getDataGenerator()->create_course();
+        $generator = $this->getDataGenerator()->get_plugin_generator('mod_questupload');
+        $questiondata = array();
+        $questiondata['content'] = 'Enter yes or no';
+        $questupload = $generator->create_test_questupload($course, QUESYESNO, $questiondata);
+
+        // Test for correct "no response" values.
+        $outline = questupload_user_outline($course, $user, null, $questupload);
+        $this->assertEquals(get_string("noresponses", "questupload"), $outline->info);
+
+        // Test for a user with one response.
+        $generator->create_question_response($questupload, reset($questupload->questions), 'y', $user->id);
+        $outline = questupload_user_outline($course, $user, null, $questupload);
+        $this->assertEquals('1 '.get_string("response", "questupload"), $outline->info);
+    }
+
+    /**
+     * Test for questupload_user_complete().
+     *
+     * @return void
+     * @throws coding_exception
+     *
+     * @covers \questupload_user_complete
+     */
+    public function test_questupload_user_complete() {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $user = $this->getDataGenerator()->create_user();
+        $course = $this->getDataGenerator()->create_course();
+        $generator = $this->getDataGenerator()->get_plugin_generator('mod_questupload');
+        $questupload = $generator->create_test_questupload($course, QUESYESNO);
+
+        $this->assertTrue(questupload_user_complete($course, $user, null, $questupload));
+        $this->expectOutputString(get_string('noresponses', 'questupload'));
+    }
+
+    /**
+     * Test for questupload_print_recent_activity().
+     *
+     * @return void
+     *
+     * @covers \questupload_print_recent_activity
+     */
+    public function test_questupload_print_recent_activity() {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $this->assertFalse(questupload_print_recent_activity(null, null, null));
+    }
+
+    /**
+     * Test for questupload_grades().
+     *
+     * @return void
+     *
+     * @covers \questupload_grades
+     */
+    public function test_questupload_grades() {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $this->assertNull(questupload_grades(null));
+    }
+
+    /**
+     * Test for questupload_get_user_grades().
+     *
+     * @return void
+     *
+     * @covers \questupload_get_user_grades
+     */
+    public function test_questupload_get_user_grades() {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $user = $this->getDataGenerator()->create_user();
+        $course = $this->getDataGenerator()->create_course();
+        $generator = $this->getDataGenerator()->get_plugin_generator('mod_questupload');
+        $questupload = $generator->create_test_questupload($course);
+
+        // Test for an array when user specified.
+        $grades = questupload_get_user_grades($questupload, $user->id);
+        $this->assertIsArray($grades);
+
+        // Test for an array when no user specified.
+        $grades = questupload_get_user_grades($questupload);
+        $this->assertIsArray($grades);
+    }
+
+    /**
+     * Test for questupload_update_grades().
+     *
+     * @return void
+     *
+     * @covers \questupload_update_grades
+     */
+    public function test_questupload_update_grades() {
+        // Don't know how to test this yet! It doesn't return anything.
+        $this->assertNull(questupload_update_grades());
+    }
+
+    /**
+     * Test for questupload_grade_item_update().
+     *
+     * @return void
+     *
+     * @covers \questupload_grade_item_update
+     */
+    public function test_questupload_grade_item_update() {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $course = $this->getDataGenerator()->create_course();
+        $generator = $this->getDataGenerator()->get_plugin_generator('mod_questupload');
+        $questupload = $generator->create_test_questupload($course);
+        $questupload->cmidnumber = $questupload->cm->idnumber;
+        $questupload->courseid = $questupload->course->id;
+        $this->assertEquals(GRADE_UPDATE_OK, questupload_grade_item_update($questupload));
+    }
+
+    /**
+     * Test for questupload_restore_deleted_question().
+     *
+     * @return void
+     */
+    public function test_questupload_restore_deleted_question() {
+        global $DB;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $course = $this->getDataGenerator()->create_course();
+        $generator = $this->getDataGenerator()->get_plugin_generator('mod_questupload');
+        $questupload = $generator->create_test_questupload($course);
+        $sid = $questupload->sid;
+
+        // Add three questions.
+        $q1 = $DB->insert_record('questupload_question', [
+            'surveyid' => $sid, 'type_id' => 1, 'position' => 1, 'deleted' => null, 'content' => 'Q1']);
+        $q2 = $DB->insert_record('questupload_question', [
+            'surveyid' => $sid, 'type_id' => 1, 'position' => 2, 'deleted' => null, 'content' => 'Q2']);
+        $q3 = $DB->insert_record('questupload_question', [
+            'surveyid' => $sid, 'type_id' => 1, 'position' => 3, 'deleted' => null, 'content' => 'Q3']);
+
+        // Delete Q2 and Q3.
+        $DB->set_field('questupload_question', 'deleted', 1234567890, ['id' => $q2]);
+        $DB->set_field('questupload_question', 'deleted', 1234567891, ['id' => $q3]);
+
+        // Restore Q2.
+        questupload_restore_deleted_question($q2, $sid);
+        $restoredq2 = $DB->get_record('questupload_question', ['id' => $q2]);
+        $this->assertNull($restoredq2->deleted);
+        $this->assertEquals(2, $restoredq2->position); // Should be after Q1.
+
+        // Restore Q3.
+        questupload_restore_deleted_question($q3, $sid);
+        $restoredq3 = $DB->get_record('questupload_question', ['id' => $q3]);
+        $this->assertNull($restoredq3->deleted);
+        $this->assertEquals(3, $restoredq3->position); // Should be after Q2.
+
+        // Check for no duplicate positions.
+        $positions = $DB->get_fieldset_select('questupload_question', 'position', 'surveyid = ?', [$sid]);
+        $this->assertCount(count(array_unique($positions)), $positions);
+    }
+}
