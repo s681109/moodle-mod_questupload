@@ -119,8 +119,8 @@ Confirmar:
 ## Antes de gerar pacote final
 
 1. Revisar `version.php` e decidir se o build deve ser incrementado.
-2. Confirmar que `version.php` declara compatibilidade minima com Moodle 4.4.4+.
-3. Confirmar que a branch de manutencao publicada e `MOODLE_404_STABLE`.
+2. Confirmar que `version.php` declara compatibilidade minima com a linha Moodle alvo.
+3. Confirmar que a branch de manutencao publicada e a branch estavel correta da linha Moodle.
 4. Confirmar que o repositorio remoto usa o padrao `moodle-mod_questupload`.
 5. Rodar lint PHP dos arquivos alterados.
 6. Rodar `purge_caches.php`.
@@ -202,3 +202,12 @@ Substituir `VERSAO` pelo build definido em `version.php`.
 - `version.php` dentro do ZIP: `2026060807`, componente `mod_questupload`, release `4.4.0-uploadfork (Build - 2026060807)`, maturity `MATURITY_STABLE`.
 - Observacao: este ZIP foi gerado antes da alteracao de compatibilidade minima para Moodle 4.4.4+ e deve ser regenerado antes de uma nova distribuicao.
 - Observacao: `tests/fixtures/backup-activity-questupload.mbz` foi mantido por ser fixture de teste do plugin.
+
+### Branch Moodle 5.1 criada
+
+- Branch: `MOODLE_501_STABLE`.
+- Build inicial da branch: `2026060809`.
+- `version.php`: componente `mod_questupload`, requires `2025100600`, release `5.1.0-uploadfork (Build - 2026060809)`, maturity `MATURITY_STABLE`.
+- Origem da branch: `MOODLE_404_STABLE`.
+- A branch `MOODLE_404_STABLE` deve permanecer intacta para instalacoes Moodle 4.4.4+.
+- Validacao manual recomendada: instalar/testar esta branch na instancia Moodle 5.1.4+ antes de gerar pacote final da linha 5.1.

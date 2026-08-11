@@ -11,12 +11,12 @@ O objetivo principal do fork é manter a base funcional do Questionnaire e acres
 - Tipo: modulo de atividade
 - Componente: `mod_questupload`
 - Pasta de instalacao: `mod/questupload`
-- Base de desenvolvimento atual: Moodle 4.4 local em `D:\wamp64\www\moodle44`
-- Build local atual: `2026060808`
+- Base de desenvolvimento atual: branch derivada da linha Moodle 4.4 local em `D:\wamp64\www\moodle44`, preparada para validação em Moodle 5.1
+- Build local atual: `2026060809`
 - Repositorio remoto recomendado: `s681109/moodle-mod_questupload`
-- Branch estavel recomendada: `MOODLE_404_STABLE`
-- Compatibilidade minima declarada: Moodle 4.4.4+
-- Compatibilidade alvo do projeto: linha Moodle 4.4
+- Branch estavel recomendada: `MOODLE_501_STABLE`
+- Compatibilidade minima declarada: Moodle 5.1+
+- Compatibilidade alvo do projeto: linha Moodle 5.1
 
 ## Decisoes de arquitetura
 
@@ -184,6 +184,9 @@ Para alinhar o projeto ao padrao usado no tema Moodle da instituicao, o reposito
 - componente Moodle: `mod_questupload`;
 - pasta de instalacao: `mod/questupload`;
 - branch estavel da linha Moodle 4.4: `MOODLE_404_STABLE`;
-- requisito minimo: Moodle 4.4.4+.
+- branch estavel da linha Moodle 5.1: `MOODLE_501_STABLE`;
+- requisito minimo desta branch: Moodle 5.1+.
 
 No build `2026060808`, `version.php` foi ajustado para declarar Moodle 4.4.4+ como requisito minimo (`2024042204`) e release `4.4.4-uploadfork`.
+
+No build `2026060809`, foi criada a branch `MOODLE_501_STABLE`, derivada de `MOODLE_404_STABLE`, com `version.php` ajustado para declarar Moodle 5.1+ como requisito minimo (`2025100600`) e release `5.1.0-uploadfork`.

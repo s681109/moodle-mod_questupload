@@ -11,8 +11,8 @@ Developers Note:
 
 There is no main branch. Questionnaire Upload is maintained in MOODLE_XXX_STABLE
 branches. Use the latest STABLE branch for development or installation.
-The current stable branch is MOODLE_404_STABLE, and supports Moodle 4.4.4 and later
-within the Moodle 4.4 line.
+The current stable branch is MOODLE_501_STABLE, and supports Moodle 5.1 and later
+within the Moodle 5.1 line.
 
 --------------------------------------------------------------------------------
 To Install:

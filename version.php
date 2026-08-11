@@ -25,10 +25,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2026060808;  // The current module version (Date: YYYYMMDDXX).
-$plugin->requires = 2024042204; // Moodle version (4.4.4).
+$plugin->version = 2026060809;  // The current module version (Date: YYYYMMDDXX).
+$plugin->requires = 2025100600; // Moodle version (5.1.0).
 
 $plugin->component = 'mod_questupload';
 
-$plugin->release = '4.4.4-uploadfork (Build - 2026060808)';
+$plugin->release = '5.1.0-uploadfork (Build - 2026060809)';
 $plugin->maturity = MATURITY_STABLE;
