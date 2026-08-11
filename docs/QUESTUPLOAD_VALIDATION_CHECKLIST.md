@@ -119,13 +119,16 @@ Confirmar:
 ## Antes de gerar pacote final
 
 1. Revisar `version.php` e decidir se o build deve ser incrementado.
-2. Rodar lint PHP dos arquivos alterados.
-3. Rodar `purge_caches.php`.
-4. Rodar `upgrade.php --non-interactive` se houver incremento de build.
-5. Rodar `check_database_schema.php`.
-6. Confirmar que nao ha arquivos temporarios `.codex_*` dentro do plugin.
-7. Gerar ZIP apenas quando solicitado.
-8. Conferir o ZIP:
+2. Confirmar que `version.php` declara compatibilidade minima com Moodle 4.4.4+.
+3. Confirmar que a branch de manutencao publicada e `MOODLE_404_STABLE`.
+4. Confirmar que o repositorio remoto usa o padrao `moodle-mod_questupload`.
+5. Rodar lint PHP dos arquivos alterados.
+6. Rodar `purge_caches.php`.
+7. Rodar `upgrade.php --non-interactive` se houver incremento de build.
+8. Rodar `check_database_schema.php`.
+9. Confirmar que nao ha arquivos temporarios `.codex_*` dentro do plugin.
+10. Gerar ZIP apenas quando solicitado.
+11. Conferir o ZIP:
    - raiz deve ser `questupload/`;
    - nao deve conter `.git/` nem `.codex_*`;
    - deve conter `lang/pt_br/questupload.php`.
@@ -157,8 +160,10 @@ Substituir `VERSAO` pelo build definido em `version.php`.
 - Build revisado: `2026060807`.
 ### Pre-pacote/checklist final executado em 2026-06-08
 
-- Build candidato: `2026060807`.
-- `version.php`: componente `mod_questupload`, requires `2024042200.00`, release `4.4.0-uploadfork (Build - 2026060807)`, maturity `MATURITY_STABLE`.
+- Build candidato: `2026060808`.
+- `version.php`: componente `mod_questupload`, requires `2024042204`, release `4.4.4-uploadfork (Build - 2026060808)`, maturity `MATURITY_STABLE`.
+- Branch estavel planejada: `MOODLE_404_STABLE`.
+- Repositorio remoto planejado: `s681109/moodle-mod_questupload`.
 - Lint completo: 121 arquivos PHP verificados com `php -l`, sem erros.
 - Banco: `check_database_schema.php` retornou `Database structure is ok`.
 - Cache: `purge_caches.php` executado antes da checagem final de strings.
@@ -195,4 +200,5 @@ Substituir `VERSAO` pelo build definido em `version.php`.
 - Artefatos ausentes no pacote: `.git/`, `.github/`, `.codex_*`, `.zip`, `.tmp`, `.bak`, `.log`.
 - PHP com BOM dentro do ZIP: 0.
 - `version.php` dentro do ZIP: `2026060807`, componente `mod_questupload`, release `4.4.0-uploadfork (Build - 2026060807)`, maturity `MATURITY_STABLE`.
+- Observacao: este ZIP foi gerado antes da alteracao de compatibilidade minima para Moodle 4.4.4+ e deve ser regenerado antes de uma nova distribuicao.
 - Observacao: `tests/fixtures/backup-activity-questupload.mbz` foi mantido por ser fixture de teste do plugin.

@@ -12,8 +12,11 @@ O objetivo principal do fork é manter a base funcional do Questionnaire e acres
 - Componente: `mod_questupload`
 - Pasta de instalacao: `mod/questupload`
 - Base de desenvolvimento atual: Moodle 4.4 local em `D:\wamp64\www\moodle44`
-- Build local atual: `2026060807`
-- Compatibilidade alvo do projeto: Moodle 4.4
+- Build local atual: `2026060808`
+- Repositorio remoto recomendado: `s681109/moodle-mod_questupload`
+- Branch estavel recomendada: `MOODLE_404_STABLE`
+- Compatibilidade minima declarada: Moodle 4.4.4+
+- Compatibilidade alvo do projeto: linha Moodle 4.4
 
 ## Decisoes de arquitetura
 
@@ -173,3 +176,14 @@ Resultados principais:
 O build `2026060807` foi validado como candidato pre-pacote. A validacao incluiu lint completo, checagem de schema, limpeza de cache, resolucao de strings criticas via Moodle, varredura de BOM/temporarios e teste operacional do ZIP combinado.
 
 Nenhum pacote ZIP final foi gerado. A proxima etapa, quando autorizada, e gerar o pacote final com raiz `questupload/` e conferir seu conteudo.
+
+## Organizacao do repositorio
+
+Para alinhar o projeto ao padrao usado no tema Moodle da instituicao, o repositorio deve usar o nome `moodle-mod_questupload` no GitHub, mantendo internamente:
+
+- componente Moodle: `mod_questupload`;
+- pasta de instalacao: `mod/questupload`;
+- branch estavel da linha Moodle 4.4: `MOODLE_404_STABLE`;
+- requisito minimo: Moodle 4.4.4+.
+
+No build `2026060808`, `version.php` foi ajustado para declarar Moodle 4.4.4+ como requisito minimo (`2024042204`) e release `4.4.4-uploadfork`.

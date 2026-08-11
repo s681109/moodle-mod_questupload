@@ -8,7 +8,7 @@ O nome público exibido ao usuário é **Formulário com Anexos**. O componente 
 
 ## Requisitos
 
-- Moodle 4.4 ou compatível com `$plugin->requires` em `version.php`.
+- Moodle 4.4.4+ ou compatível com `$plugin->requires` em `version.php`.
 - Permissão administrativa para instalar módulos em `mod/`.
 - PHP e extensões exigidas pela própria instalação Moodle.
 
@@ -114,4 +114,5 @@ O plugin inclui suporte a backup/restore dos arquivos enviados. Após restaurar 
 
 - O plugin pode coexistir com o `mod_questionnaire`, pois o componente interno é independente.
 - Não renomeie a pasta `questupload` nem o componente `mod_questupload`.
+- O repositório remoto recomendado é `s681109/moodle-mod_questupload`, com branch estável `MOODLE_404_STABLE`.
 - Antes de instalar em produção, valide permissões, backup/restore, exclusão de respostas e geração de ZIP em uma instância de homologação.
