@@ -12,7 +12,7 @@ O objetivo principal do fork é manter a base funcional do Questionnaire e acres
 - Componente: `mod_questupload`
 - Pasta de instalacao: `mod/questupload`
 - Base de desenvolvimento atual: branch derivada da linha Moodle 4.4 local em `D:\wamp64\www\moodle44`, preparada para validação em Moodle 5.1
-- Build local atual: `2026060810`
+- Build local atual: `2026060811`
 - Repositorio remoto recomendado: `s681109/moodle-mod_questupload`
 - Branch estavel recomendada: `MOODLE_501_STABLE`
 - Compatibilidade minima declarada: Moodle 5.1+
@@ -192,3 +192,5 @@ No build `2026060808`, `version.php` foi ajustado para declarar Moodle 4.4.4+ co
 No build `2026060809`, foi criada a branch `MOODLE_501_STABLE`, derivada de `MOODLE_404_STABLE`, com `version.php` ajustado para declarar Moodle 5.1+ como requisito minimo (`2025100600`) e release `5.1.0-uploadfork`.
 
 No build `2026060810`, a branch `MOODLE_501_STABLE` foi finalizada como candidata de distribuicao para Moodle 5.1. O teste tecnico foi executado em uma instancia Moodle 5.1.4+ (`http://moodle-teste.local`), curso `CODX-CFI-2026` (`courseid=8`), com atividade contendo todos os tipos de questao, incluindo `File upload`, e uma resposta completa de usuario de teste com anexo gravado pela File API.
+
+No build `2026060811`, foi adicionada regra `.gitattributes` para excluir metadados de desenvolvimento/CI do pacote gerado por `git archive`, mantendo o ZIP final com raiz `questupload/` e sem `.github/`.
