@@ -211,3 +211,20 @@ Substituir `VERSAO` pelo build definido em `version.php`.
 - Origem da branch: `MOODLE_404_STABLE`.
 - A branch `MOODLE_404_STABLE` deve permanecer intacta para instalacoes Moodle 4.4.4+.
 - Validacao manual recomendada: instalar/testar esta branch na instancia Moodle 5.1.4+ antes de gerar pacote final da linha 5.1.
+
+### Finalizacao da branch Moodle 5.1
+
+- Branch: `MOODLE_501_STABLE`.
+- Build final candidato: `2026060810`.
+- `version.php`: componente `mod_questupload`, requires `2025100600`, release `5.1.0-uploadfork (Build - 2026060810)`, maturity `MATURITY_STABLE`.
+- Instancia de teste: Moodle 5.1.4+ (`2025100604.04`), `http://moodle-teste.local`.
+- Curso usado no teste: `CODX-CFI-2026` (`courseid=8`).
+- Atividade criada: `Formulário com Anexos - teste todos os tipos - curso 8`.
+- Usuario respondente: `questupload_student_501_c8`.
+- Resultado tecnico:
+  - 13 itens de questao criados, cobrindo todos os tipos disponiveis;
+  - 1 resposta completa registrada;
+  - 1 anexo `image/png` gravado em `mod_questupload`, filearea `response_file`;
+  - distribuicao de respostas validada nas tabelas `response_bool`, `response_text`, `response_date`, `resp_single`, `resp_multiple`, `response_rank` e `response_file`;
+  - `check_database_schema.php` retornou `Database structure is ok`.
+- Status: teste tecnico de compatibilidade Moodle 5.1 aprovado; teste funcional manual pela interface permanece recomendado antes de uso em producao.
