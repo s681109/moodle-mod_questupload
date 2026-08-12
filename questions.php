@@ -406,7 +406,7 @@ if ($action == "confirmdelquestion" || $action == "confirmdelquestionparent") {
     $question = $questupload->questions[$qid];
     $qtype = $question->type_id;
 
-    $countresps = count_reponses_question($qid, $qtype);
+    $countresps = questupload_count_responses_question($qid, $qtype);
 
     // Needed to print potential media in question text.
 
@@ -454,7 +454,7 @@ if ($action == "confirmdelquestion" || $action == "confirmdelquestionparent") {
     $qid = key($qformdata->deletebutton);
     $qtype = $questupload->deletequestions[$qid]->type_id;
     $questiondelete = $questupload->deletequestions[$qid];
-    $countresps = count_reponses_question($qid, $qtype);
+    $countresps = questupload_count_responses_question($qid, $qtype);
 
     $urlno = new moodle_url("/mod/questupload/questions.php", ['id' => $questupload->cm->id]);
     $urlyes = new moodle_url("/mod/questupload/questions.php", ['id' => $questupload->cm->id, "delpermanentlyq" => $qid]);

@@ -1131,7 +1131,7 @@ function questupload_get_standard_page_items($id = null, $a = null) {
  * @param int $qtype question type.
  * @return int number or 0 if responses were not found.
  */
-function count_reponses_question(int $qid, int $qtype): int {
+function questupload_count_responses_question(int $qid, int $qtype): int {
     global $DB;
 
     $countresps = 0;
