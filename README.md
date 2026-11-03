@@ -2,9 +2,9 @@
 
 # moodle-mod_questupload
 
-The questupload module allows you to construct questuploads (surveys) from a
-variety of question type. It was originally based on phpESP, and Open Source
-survey tool.
+O módulo questupload permite construir quizzes (pesquisas) a partir de um
+variedade de tipos de perguntas. Foi originalmente baseado em phpESP e Open Source
+ferramenta de pesquisa.
 
 --------------------------------------------------------------------------------
 Developers Note:
