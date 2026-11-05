@@ -83,6 +83,7 @@ $sid = $questupload->survey->id;
 
 // Delete question button has been pressed in questions_form AND deletion has been confirmed on the confirmation page.
 if ($delq) {
+    require_sesskey();
     $qid = $delq;
     $sid = $questupload->survey->id;
     $questuploadid = $questupload->id;
@@ -145,6 +146,7 @@ if ($delq) {
 
 // Delete question permanently.
 if ($delpermanentlyq) {
+    require_sesskey();
     $qid = $delpermanentlyq;
     $sid = $questupload->survey->id;
     questupload_delete_permanently_questions($qid, $sid);
@@ -160,6 +162,7 @@ if ($delpermanentlyq) {
 
 // Restore question.
 if ($restoreq) {
+    require_sesskey();
     $qid = $restoreq;
     $qdeleted = isset($questupload->deletequestions[$qid]) ? $questupload->deletequestions[$qid] : false;
     if ($qid && $qdeleted) {
@@ -220,7 +223,7 @@ if ($action == 'main') {
             // Delete section breaks without asking for confirmation.
             if ($qtype == QUESPAGEBREAK) {
                 redirect(new \moodle_url('/mod/questupload/questions.php',
-                    ['id' => $questupload->cm->id, 'delq' => $qid]));
+                    ['id' => $questupload->cm->id, 'delq' => $qid, 'sesskey' => sesskey()]));
             }
 
             $action = "confirmdelquestion";
@@ -304,7 +307,7 @@ if ($action == 'main') {
         } else if (isset($qformdata->restorebutton)) {
             $qid = key($qformdata->restorebutton);
             redirect(new moodle_url('/mod/questupload/questions.php',
-                ['id' => $questupload->cm->id, QUESTUPLOAD_RESTORE_PARAM => $qid]));
+                ['id' => $questupload->cm->id, QUESTUPLOAD_RESTORE_PARAM => $qid, 'sesskey' => sesskey()]));
         }
     }
 
@@ -434,8 +437,8 @@ if ($action == "confirmdelquestion" || $action == "confirmdelquestionparent") {
     $urlno = new moodle_url("/mod/questupload/questions.php?{$args}");
     $args .= "&delq={$qid}";
     $urlyes = new moodle_url("/mod/questupload/questions.php?{$args}");
-    $buttonyes = new single_button($urlyes, get_string('yes'));
-    $buttonno = new single_button($urlno, get_string('no'));
+    $buttonyes = new single_button($urlyes, get_string('yes'), 'post');
+    $buttonno = new single_button($urlno, get_string('no'), 'get');
     if ($action == "confirmdelquestionparent") {
         $strnum = get_string('position', 'questupload');
         $qid = key($qformdata->removebutton);
@@ -458,8 +461,8 @@ if ($action == "confirmdelquestion" || $action == "confirmdelquestionparent") {
 
     $urlno = new moodle_url("/mod/questupload/questions.php", ['id' => $questupload->cm->id]);
     $urlyes = new moodle_url("/mod/questupload/questions.php", ['id' => $questupload->cm->id, "delpermanentlyq" => $qid]);
-    $buttonyes = new single_button($urlyes, get_string('yes'));
-    $buttonno = new single_button($urlno, get_string('no'));
+    $buttonyes = new single_button($urlyes, get_string('yes'), 'post');
+    $buttonno = new single_button($urlno, get_string('no'), 'get');
     $msg = '<div class="warning centerpara"><p>'.get_string('confirmdelpermanentlyq', 'questupload').'</p>';
     if ($countresps !== 0) {
         $msg .= '<p>'.get_string('confirmdelquestionresps', 'questupload', $countresps).'</p>';

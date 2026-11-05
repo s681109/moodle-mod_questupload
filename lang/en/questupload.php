@@ -760,3 +760,4 @@ $string['fileuploadincluderesponsepdfs'] = 'Include individual response PDFs in 
 $string['fileuploadattachments'] = 'Attachments';
 $string['fileuploadresponsepdfmetadata'] = 'Administrative data';
 $string['fileuploadresponsepdfgeneratednote'] = 'This PDF was generated automatically from the response report data and is included for administrative review.';
+$string['textfor'] = 'Text for {$a}';

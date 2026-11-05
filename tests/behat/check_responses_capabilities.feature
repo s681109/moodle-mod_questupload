@@ -98,3 +98,24 @@ Feature: Review responses with different capabilities
     And I follow "Test questupload 2"
     Then I should see "View all responses"
     And I log out
+
+  @javascript
+  Scenario: A student cannot view all responses by default.
+    Given the following "users" exist:
+      | username | firstname | lastname | email |
+      | student1 | Student | 1 | student1@example.com |
+    And the following "courses" exist:
+      | fullname | shortname | category |
+      | Course 1 | C1 | 0 |
+    And the following "course enrolments" exist:
+      | user | course | role |
+      | student1 | C1 | student |
+    And the following "activities" exist:
+      | activity | name | description | course | idnumber | resp_view |
+      | questupload | Test questupload | Test questupload description | C1 | questupload0 | 3 |
+    And "Test questupload" has questions and responses
+    And I log in as "student1"
+    And I am on "Course 1" course homepage
+    And I follow "Test questupload"
+    Then I should not see "View all responses"
+    And I log out

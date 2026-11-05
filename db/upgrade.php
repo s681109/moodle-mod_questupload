@@ -1085,6 +1085,27 @@ function xmldb_questupload_upgrade($oldversion=0) {
         upgrade_mod_savepoint(true, 2026060300, 'questupload');
     }
 
+    if ($oldversion < 2026110500) {
+        $studentroleid = $DB->get_field('role', 'id', ['shortname' => 'student']);
+        $capability = 'mod/questupload:readallresponses';
+        $systemcontext = context_system::instance();
+
+        if ($studentroleid) {
+            $existing = $DB->get_record('role_capabilities', [
+                'contextid' => $systemcontext->id,
+                'roleid' => $studentroleid,
+                'capability' => $capability,
+            ]);
+
+            // Preserve explicit Prevent/Prohibit decisions, but remove the insecure legacy Allow.
+            if (!$existing || $existing->permission == CAP_ALLOW) {
+                role_change_permission($studentroleid, $systemcontext, $capability, CAP_PREVENT);
+            }
+        }
+
+        upgrade_mod_savepoint(true, 2026110500, 'questupload');
+    }
+
     return true;
 }
 

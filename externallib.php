@@ -87,7 +87,7 @@ class external extends external_api {
      *
      * @param int $questuploadid the questupload instance id
      * @param int $surveyid Survey id
-     * @param int $userid User id
+     * @param int $userid User id. Must match the authenticated user.
      * @param int $cmid Course module id
      * @param int $sec Section number
      * @param int $completed Completed survey 1/0
@@ -99,6 +99,8 @@ class external extends external_api {
      */
     public static function submit_questupload_response($questuploadid, $surveyid, $userid, $cmid, $sec, $completed, $rid,
                                                          $submit, $action, $responses) {
+        global $DB, $USER;
+
         self::validate_parameters(self::submit_questupload_response_parameters(),
             [
                 'questuploadid' => $questuploadid,
@@ -122,7 +124,25 @@ class external extends external_api {
 
         require_capability('mod/questupload:submit', $context);
 
-        $result = $questupload->save_mobile_data($userid, $sec, $completed, $rid, $submit, $action, $responses);
+        \mod_questupload\local\response_submission_validator::assert_user_identity(
+            (int)$userid,
+            (int)$USER->id
+        );
+
+        if ((int)$questuploadid !== (int)$questupload->id || (int)$surveyid !== (int)$questupload->survey->id) {
+            throw new \invalid_parameter_exception('The questupload or survey does not match the course module.');
+        }
+
+        if ($rid) {
+            $response = $DB->get_record('questupload_response', ['id' => $rid],
+                'id, questuploadid, userid', IGNORE_MISSING);
+            if (!$response || (int)$response->questuploadid !== (int)$questupload->id ||
+                    (int)$response->userid !== (int)$USER->id) {
+                throw new \invalid_parameter_exception('The response does not belong to the authenticated user.');
+            }
+        }
+
+        $result = $questupload->save_mobile_data($USER->id, $sec, $completed, $rid, $submit, $action, $responses);
         $result['submitted'] = true;
         if (isset($result['warnings']) && !empty($result['warnings'])) {
             unset($result['responses']);

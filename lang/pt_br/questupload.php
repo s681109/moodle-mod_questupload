@@ -718,3 +718,4 @@ $string['fileuploadincluderesponsepdfs'] = 'Incluir PDFs individuais das respost
 $string['fileuploadattachments'] = 'Anexos';
 $string['fileuploadresponsepdfmetadata'] = 'Dados administrativos';
 $string['fileuploadresponsepdfgeneratednote'] = 'Este PDF foi gerado automaticamente a partir dos dados do relatório de respostas e está incluído para revisão administrativa.';
+$string['textfor'] = 'Texto para {$a}';

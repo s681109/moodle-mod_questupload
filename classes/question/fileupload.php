@@ -105,8 +105,8 @@ class fileupload extends question {
             $this->get_file_manager_option()
         );
 
-        if (isset($response->answers[$this->id]) && !empty($response->answers[$this->id]) &&
-                isset($_REQUEST['resume']) && $_REQUEST['resume'] === '1') {
+        $resume = optional_param('resume', 0, PARAM_BOOL);
+        if (isset($response->answers[$this->id]) && !empty($response->answers[$this->id]) && $resume) {
             $this->prepare_existing_files_in_draft_area($draftitemid, $response->answers[$this->id]);
         }
         // Filemanager form element implementation is far from optimal, we need to rework this if we ever fix it...

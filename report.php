@@ -312,6 +312,7 @@ switch ($action) {
 
     case 'dvresp': // Delete single response. Do it!
         require_capability('mod/questupload:deleteresponses', $context);
+        require_sesskey();
 
         if (empty($questupload->survey)) {
             throw new \moodle_exception('surveynotexists', 'mod_questupload');
@@ -360,6 +361,7 @@ switch ($action) {
 
     case 'dvallresp': // Delete all responses in questupload (or group). Do it!
         require_capability('mod/questupload:deleteresponses', $context);
+        require_sesskey();
 
         if (empty($questupload->survey)) {
             throw new \moodle_exception('surveynotexists', 'mod_questupload');
@@ -523,6 +525,7 @@ switch ($action) {
 
     case 'dfs':
         require_capability('mod/questupload:downloadresponses', $context);
+        require_sesskey();
         // Use the questupload name as the file name. Clean it and change any non-filename characters to '_'.
         $name = clean_param($questupload->name, PARAM_FILE);
         $name = preg_replace("/[^A-Z0-9]+/i", "_", trim($name));

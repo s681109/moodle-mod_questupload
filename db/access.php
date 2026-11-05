@@ -181,8 +181,7 @@ $capabilities = array(
         'legacy' => array(
             'manager' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
-            'student' => CAP_ALLOW
+            'editingteacher' => CAP_ALLOW
         )
     ),
 

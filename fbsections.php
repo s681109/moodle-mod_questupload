@@ -60,6 +60,10 @@ if (!isset($SESSION->questupload)) {
 
 $questupload = new questupload($course, $cm, 0, $questupload);
 
+if (!$questupload->capabilities->editquestions) {
+    throw new \moodle_exception('nopermissions', 'mod_questupload');
+}
+
 if ($sectionid) {
     // Get the specified section by its id.
     $feedbacksection = new mod_questupload\feedback\section($questupload->questions, ['id' => $sectionid]);
@@ -93,17 +97,15 @@ $questupload->add_page(new \mod_questupload\output\feedbackpage());
 
 $SESSION->questupload->current_tab = 'feedback';
 
-if (!$questupload->capabilities->editquestions) {
-    throw new \moodle_exception('nopermissions', 'mod_questupload');
-}
-
 // Handle confirmed actions that impact display immediately.
 if ($action == 'removequestion') {
+    require_sesskey();
     $sectionid = required_param('sectionid', PARAM_INT);
     $qid = required_param('qid', PARAM_INT);
     $feedbacksection->remove_question($qid);
 
 } else if ($action == 'deletesection') {
+    require_sesskey();
     $sectionid = required_param('sectionid', PARAM_INT);
     if ($sectionid == $feedbacksection->id) {
         $feedbacksection->delete();
@@ -262,8 +264,8 @@ if ($action == 'confirmremovequestion') {
     $args['action'] = 'removequestion';
     $args['qid'] = $qid;
     $urlyes = new moodle_url('/mod/questupload/fbsections.php', $args);
-    $buttonyes = new single_button($urlyes, get_string('yes'));
-    $buttonno = new single_button($urlno, get_string('no'));
+    $buttonyes = new single_button($urlyes, get_string('yes'), 'post');
+    $buttonno = new single_button($urlno, get_string('no'), 'get');
     $questupload->page->add_to_page('formarea', $questupload->renderer->confirm($msg, $buttonyes, $buttonno));
 
 } else if ($action == 'confirmdeletesection') {
@@ -274,8 +276,8 @@ if ($action == 'confirmremovequestion') {
     $urlno = new moodle_url('/mod/questupload/fbsections.php', $args);
     $args['action'] = 'deletesection';
     $urlyes = new moodle_url('/mod/questupload/fbsections.php', $args);
-    $buttonyes = new single_button($urlyes, get_string('yes'));
-    $buttonno = new single_button($urlno, get_string('no'));
+    $buttonyes = new single_button($urlyes, get_string('yes'), 'post');
+    $buttonno = new single_button($urlno, get_string('no'), 'get');
     $questupload->page->add_to_page('formarea', $questupload->renderer->confirm($msg, $buttonyes, $buttonno));
 
 } else {
